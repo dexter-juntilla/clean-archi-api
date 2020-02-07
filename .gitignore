@@ -63,3 +63,6 @@ node_modules/
 
 # dotenv environment variables file
 .env
+
+.DS_Store
+platform-demo-9e004-firebase-adminsdk-n0awy-78a0bd83f0.json
