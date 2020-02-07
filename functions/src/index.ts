@@ -3,6 +3,7 @@ import * as express from 'express';
 import * as admin from "firebase-admin";
 import * as bodyParser from "body-parser";
 import * as cors from "cors";
+import routes from './routes';
 
 admin.initializeApp({
     credential: admin.credential.applicationDefault(),
@@ -10,6 +11,7 @@ admin.initializeApp({
 });
 
 const app = express();
+const firestore = admin.firestore();
 const port = 8083;
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -23,28 +25,7 @@ app.use(bodyParser.json());
 // cross origin resource sharing
 app.use(cors());
 
-// define a route handler for the default home page
-app.get("/", async (req: any, res: any) => {
-    try {
-        const db = admin.firestore();
-        // const { query } = req;
-
-        const carsQuery = db.collection("cars");
-
-        const carsResult = await carsQuery.get();
-
-        const cars: object[] = [];
-
-        carsResult.forEach(doc => {
-            cars.push(doc.data());
-        });
-
-        res.json({ cars });
-    } catch (err) {
-        res.status(500).send(err);
-    }
-});
-
+routes(app, admin, firestore);
 
 if (process.env.NODE_ENV === 'development') {
     app.listen(port, () => {
